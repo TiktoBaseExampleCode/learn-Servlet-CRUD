@@ -32,13 +32,25 @@ public class mainApp extends HttpServlet{
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		List<Follower> listing= followerImpl.listOfFollower();
-		String listingCpy = this.gson.toJson(listing);
-		PrintWriter out = response.getWriter();
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
-		out.print(listingCpy);
-		out.flush();
+		String index = request.getParameter("index");
+		if(index == null) {	
+			List<Follower> listing= followerImpl.listOfFollower();
+			String listingCpy = this.gson.toJson(listing);
+			PrintWriter out = response.getWriter();
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			out.print(listingCpy);
+			out.flush();
+		}else{
+			Integer findIndex = Integer.parseInt(index);
+			Follower selectFollower = followerImpl.viewDetailFollower(findIndex);
+			String detailFollower = this.gson.toJson(selectFollower);
+			PrintWriter out = response.getWriter();
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			out.print(detailFollower);
+			out.flush();
+		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
