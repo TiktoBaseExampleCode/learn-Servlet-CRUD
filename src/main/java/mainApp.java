@@ -37,8 +37,8 @@ public class mainApp extends HttpServlet{
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		String id = request.getParameter("id");
-		String realName = request.getParameter("name");		
+		Integer id = Integer.parseInt(request.getParameter("id"));
+		String realName = request.getParameter("name");	
 		Follower inp = new Follower();
 		inp.setId(id);
 		inp.setRealname(realName);
@@ -48,7 +48,7 @@ public class mainApp extends HttpServlet{
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
 		String index = request.getParameter("index");
-		String newId = request.getParameter("id");
+		Integer newId = Integer.parseInt(request.getParameter("id"));
 		String newRealName = request.getParameter("name");
 		
 		Integer targetIndex = Integer.parseInt(index);
@@ -59,12 +59,6 @@ public class mainApp extends HttpServlet{
 		inp.setRealname(newRealName);
 		
 		listing.set(targetIndex, inp);
-		
-//		if(listing.contains(inp)){
-//			listing.set(targetIndex, inp);	
-//		} else {
-//			listing.add(inp);
-//		}	
 	}
 	
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException

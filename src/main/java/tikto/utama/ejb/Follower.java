@@ -10,13 +10,13 @@ public class Follower implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private String realName;
-	private String id;
+	private Integer id;
 	
 	public void setRealname(String realName) {
 		this.realName = realName;
 	}
 	
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	
@@ -24,7 +24,7 @@ public class Follower implements Serializable{
 		return realName;
 	}
 	
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 	
