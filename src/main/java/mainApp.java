@@ -15,9 +15,7 @@ import tikto.utama.ejb.Follower;
 
 @WebServlet("/listing")
 public class mainApp extends HttpServlet{
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	
 	private ArrayList<Follower> listing = new ArrayList<Follower>();
@@ -47,19 +45,26 @@ public class mainApp extends HttpServlet{
 		listing.add(inp);
 	}	
 	
-	protected void doPatch(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
 		String index = request.getParameter("index");
+		String newId = request.getParameter("id");
+		String newRealName = request.getParameter("name");
+		
+		Integer targetIndex = Integer.parseInt(index);
 		
 		Follower inp = new Follower();
-		inp.setId(request.getParameter("id"));
-		inp.setRealname(request.getParameter("name"));
 		
-		if(listing.contains(inp)){
-			listing.set(Integer.parseInt(index), inp);	
-		} else {
-			listing.add(inp);
-		}
+		inp.setId(newId);
+		inp.setRealname(newRealName);
+		
+		listing.set(targetIndex, inp);
+		
+//		if(listing.contains(inp)){
+//			listing.set(targetIndex, inp);	
+//		} else {
+//			listing.add(inp);
+//		}	
 	}
 	
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
