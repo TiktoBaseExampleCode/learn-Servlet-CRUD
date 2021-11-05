@@ -1,5 +1,6 @@
+package tikto.utama;
 import java.util.ArrayList;
-
+import java.util.List;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 
 import tikto.utama.ejb.Follower;
+import tikto.utama.servlet.FollowerImpl;
 
 @WebServlet("/listing")
 public class mainApp extends HttpServlet{
@@ -19,14 +21,18 @@ public class mainApp extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	
 	private ArrayList<Follower> listing = new ArrayList<Follower>();
+
 	private Gson gson = new Gson();
+	private FollowerImpl followerImpl;
 	
 	public mainApp() {
 		super();
+		followerImpl = new FollowerImpl();
 	}
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
+		List<Follower> listing= followerImpl.listOfFollower();
 		String listingCpy = this.gson.toJson(listing);
 		PrintWriter out = response.getWriter();
 		response.setContentType("application/json");
@@ -42,32 +48,25 @@ public class mainApp extends HttpServlet{
 		Follower inp = new Follower();
 		inp.setId(id);
 		inp.setRealname(realName);
-		listing.add(inp);
+		followerImpl.addFollower(inp);
 	}	
 	
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		String index = request.getParameter("index");
 		Integer newId = Integer.parseInt(request.getParameter("id"));
 		String newRealName = request.getParameter("name");
-		
-		Integer targetIndex = Integer.parseInt(index);
 		
 		Follower inp = new Follower();
 		
 		inp.setId(newId);
 		inp.setRealname(newRealName);
-		
-		listing.set(targetIndex, inp);
+		followerImpl.updatFollower(inp);
 	}
 	
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
 		String index = request.getParameter("index");
-		try {
-			listing.remove(Integer.parseInt(index));
-		}catch(Exception e) {
-			
-		}
+		Integer numIndex = Integer.parseInt(index);
+		followerImpl.deleteFollower(numIndex);
 	}
 }
