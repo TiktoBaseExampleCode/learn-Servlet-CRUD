@@ -1,7 +1,9 @@
 package tikto.utama;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
@@ -10,6 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
 
@@ -40,13 +43,11 @@ public class mainApp extends HttpServlet{
 			List<Follower> listing= followerImpl.listOfFollower();
 			String listingCpy = this.gson.toJson(listing);
 			
-			JSONObject obj = new JSONObject(listingCpy);
-			String xml_data = XML.toString(obj);			
 			
 			PrintWriter out = response.getWriter();
 			response.setContentType("text/xml");
 			response.setCharacterEncoding("UTF-8");
-			out.print(xml_data);
+			out.print(listingCpy);
 			out.flush();
 		}else{
 			Integer findIndex = Integer.parseInt(index);
@@ -65,12 +66,43 @@ public class mainApp extends HttpServlet{
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-	{
-		Integer id = Integer.parseInt(request.getParameter("id"));
-		String realName = request.getParameter("name");	
+	{		
 		Follower inp = new Follower();
-		inp.setId(id);
-		inp.setRealname(realName);
+		
+		String xml = null;
+		
+		try {
+			byte[] xmlData = new byte[request.getContentLength()];
+			
+			InputStream sis = request.getInputStream();
+			BufferedInputStream bis = new BufferedInputStream(sis);
+			
+			bis.read(xmlData, 0, xmlData.length);
+			
+			if (request.getCharacterEncoding() != null) {
+				xml = new String(xmlData, request.getCharacterEncoding());
+			} else {
+				xml = new String(xmlData);
+			}
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		}	
+		
+		String jsonString = null;
+		
+		try {  
+			JSONObject json = XML.toJSONObject(xml);   
+			        jsonString = json.toString(4);  
+			        System.out.println(jsonString);  
+			  
+			}catch (JSONException e) {  
+			// TODO: handle exception 
+			}  
+		
+		JSONObject jsonObject = new JSONObject(jsonString);
+		
+		inp.setId(jsonObject.getInt("id"));
+		inp.setRealname(jsonObject.getString("realName"));
 		followerImpl.addFollower(inp);
 	}	
 	
