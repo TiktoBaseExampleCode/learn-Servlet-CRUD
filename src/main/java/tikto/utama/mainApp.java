@@ -21,7 +21,7 @@ import com.google.gson.Gson;
 import tikto.utama.ejb.Follower;
 import tikto.utama.servlet.FollowerImpl;
 
-@WebServlet("/listing")
+@WebServlet("/followers")
 public class mainApp extends HttpServlet{
 	
 	private static final long serialVersionUID = 1L;
@@ -42,6 +42,7 @@ public class mainApp extends HttpServlet{
 		if(index == null) {	
 			List<Follower> listing= followerImpl.listOfFollower();
 			String listingCpy = this.gson.toJson(listing);
+			
 			
 			
 			PrintWriter out = response.getWriter();
