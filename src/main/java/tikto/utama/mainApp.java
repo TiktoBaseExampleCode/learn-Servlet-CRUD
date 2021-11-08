@@ -39,10 +39,14 @@ public class mainApp extends HttpServlet{
 		if(index == null) {	
 			List<Follower> listing= followerImpl.listOfFollower();
 			String listingCpy = this.gson.toJson(listing);
+			
+			JSONObject obj = new JSONObject(listingCpy);
+			String xml_data = XML.toString(obj);			
+			
 			PrintWriter out = response.getWriter();
-			response.setContentType("application/json");
+			response.setContentType("text/xml");
 			response.setCharacterEncoding("UTF-8");
-			out.print(listingCpy);
+			out.print(xml_data);
 			out.flush();
 		}else{
 			Integer findIndex = Integer.parseInt(index);
