@@ -4,9 +4,6 @@ import java.io.Serializable;
 
 public class Follower implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	private String realName;
@@ -27,5 +24,4 @@ public class Follower implements Serializable{
 	public Integer getId() {
 		return id;
 	}
-	
 }

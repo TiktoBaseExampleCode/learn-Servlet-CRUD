@@ -1,5 +1,5 @@
 package tikto.utama;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONObject;
+import org.json.XML;
+
 import com.google.gson.Gson;
 
 import tikto.utama.ejb.Follower;
@@ -19,8 +22,6 @@ import tikto.utama.servlet.FollowerImpl;
 public class mainApp extends HttpServlet{
 	
 	private static final long serialVersionUID = 1L;
-	
-	private ArrayList<Follower> listing = new ArrayList<Follower>();
 
 	private Gson gson = new Gson();
 	private FollowerImpl followerImpl;
@@ -36,19 +37,29 @@ public class mainApp extends HttpServlet{
 		if(index == null) {	
 			List<Follower> listing= followerImpl.listOfFollower();
 			String listingCpy = this.gson.toJson(listing);
+			
+			JSONObject obj = new JSONObject(listingCpy);
+			String respond = XML.toString(obj);			
+			
 			PrintWriter out = response.getWriter();
-			response.setContentType("application/json");
+			
+			response.setContentType("text/xml");
 			response.setCharacterEncoding("UTF-8");
-			out.print(listingCpy);
+			out.print(respond);
 			out.flush();
+			
 		}else{
 			Integer findIndex = Integer.parseInt(index);
 			Follower selectFollower = followerImpl.viewDetailFollower(findIndex);
 			String detailFollower = this.gson.toJson(selectFollower);
+			
+			JSONObject obj = new JSONObject(detailFollower);
+			String respond = XML.toString(obj);
+			
 			PrintWriter out = response.getWriter();
-			response.setContentType("application/json");
+			response.setContentType("text/xml");
 			response.setCharacterEncoding("UTF-8");
-			out.print(detailFollower);
+			out.print(respond);		
 			out.flush();
 		}
 	}
