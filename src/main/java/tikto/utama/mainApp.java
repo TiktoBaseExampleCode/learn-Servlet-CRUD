@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONObject;
+import org.json.XML;
+
 import com.google.gson.Gson;
 
 import tikto.utama.ejb.Follower;
@@ -45,10 +48,14 @@ public class mainApp extends HttpServlet{
 			Integer findIndex = Integer.parseInt(index);
 			Follower selectFollower = followerImpl.viewDetailFollower(findIndex);
 			String detailFollower = this.gson.toJson(selectFollower);
+			
+			JSONObject obj = new JSONObject(detailFollower);
+			String xml_data = XML.toString(obj);
+			
 			PrintWriter out = response.getWriter();
-			response.setContentType("application/json");
+			response.setContentType("text/xml");
 			response.setCharacterEncoding("UTF-8");
-			out.print(detailFollower);
+			out.print(xml_data);
 			out.flush();
 		}
 	}
