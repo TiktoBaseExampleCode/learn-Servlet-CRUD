@@ -37,54 +37,30 @@ public class mainApp extends HttpServlet{
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
+		String xml = null;
 		String index = request.getParameter("index");
 		if(index == null) {	
 			List<Follower> listing = followerImpl.listOfFollower();
 			JSONArray array = new JSONArray(listing);
-			String xml = XML.toString(array, "Follower");
-			PrintWriter out = response.getWriter();
-			response.setContentType("text/xml");
-			response.setCharacterEncoding("UTF-8");
-			out.print(xml);
-			out.flush();
+			xml = XML.toString(array, "Follower");
 		}else{
 			Integer findIndex = Integer.parseInt(index);
 			Follower selectFollower = followerImpl.viewDetailFollower(findIndex);
 			String detailFollower = this.gson.toJson(selectFollower);
 			JSONObject obj = new JSONObject(detailFollower);
-			String xml_data = XML.toString(obj);			
-			PrintWriter out = response.getWriter();
-			response.setContentType("text/xml");
-			response.setCharacterEncoding("UTF-8");
-			out.print(xml_data);
-			out.flush();
+			xml = XML.toString(obj);	
 		}
+		PrintWriter out = response.getWriter();
+		response.setContentType("text/xml");
+		response.setCharacterEncoding("UTF-8");
+		out.print(xml);
+		out.flush();
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{		
-		Follower inp = new Follower();	
-		String xml = null;	
-		try {
-			byte[] xmlData = new byte[request.getContentLength()];		
-			InputStream sis = request.getInputStream();
-			BufferedInputStream bis = new BufferedInputStream(sis);
-			bis.read(xmlData, 0, xmlData.length);		
-			if (request.getCharacterEncoding() != null) {
-				xml = new String(xmlData, request.getCharacterEncoding());
-			} else {
-				xml = new String(xmlData);
-			}
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		}		
-		String jsonString = null;	
-		try {  
-			JSONObject json = XML.toJSONObject(xml);   
-			        jsonString = json.toString(4);  
-		}catch (JSONException e) {  
-			// TODO: handle exception 
-		}  		
+		Follower inp = new Follower();			
+		String jsonString = xmlToJSON(request);
 		JSONObject jsonObject = new JSONObject(jsonString);		
 		inp.setId(jsonObject.getInt("id"));
 		inp.setRealname(jsonObject.getString("realName"));
@@ -94,27 +70,7 @@ public class mainApp extends HttpServlet{
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
 		Follower inp = new Follower();	
-		String xml = null;
-		try {
-			byte[] xmlData = new byte[request.getContentLength()];	
-			InputStream sis = request.getInputStream();
-			BufferedInputStream bis = new BufferedInputStream(sis);
-			bis.read(xmlData, 0, xmlData.length);
-			if (request.getCharacterEncoding() != null) {
-				xml = new String(xmlData, request.getCharacterEncoding());
-			} else {
-				xml = new String(xmlData);
-			}
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		}	
-		String jsonString = null;
-		try {  
-			JSONObject json = XML.toJSONObject(xml);   
-			        jsonString = json.toString(4);  
-		}catch (JSONException e) {  
-			// TODO: handle exception 
-		}  
+		String jsonString = xmlToJSON(request);
 		JSONObject jsonObject = new JSONObject(jsonString);		
 		inp.setId(jsonObject.getInt("id"));
 		inp.setRealname(jsonObject.getString("realName"));
@@ -122,7 +78,14 @@ public class mainApp extends HttpServlet{
 	}
 	
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-	{
+	{  
+		String jsonString = xmlToJSON(request);
+		JSONObject jsonObject = new JSONObject(jsonString);	
+		Integer numIndex = jsonObject.getInt("index");
+		followerImpl.deleteFollower(numIndex);
+	}
+	
+	private String xmlToJSON(HttpServletRequest request) {
 		String xml = null;
 		try {
 			byte[] xmlData = new byte[request.getContentLength()];
@@ -143,9 +106,7 @@ public class mainApp extends HttpServlet{
 			        jsonString = json.toString(4);   
 		}catch (JSONException e) {  
 			// TODO: handle exception 
-		}  
-		JSONObject jsonObject = new JSONObject(jsonString);	
-		Integer numIndex = jsonObject.getInt("index");
-		followerImpl.deleteFollower(numIndex);
+		}
+		return jsonString;
 	}
 }
