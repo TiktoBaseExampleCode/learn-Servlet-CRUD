@@ -17,12 +17,12 @@ public class FollowerImpl implements IFollowerService {
 
 	@Override
 	public void deleteFollower(Integer followerId) {
-		followerList.remove(followerId);
+		int indexTarget = followerId;
+		followerList.remove(indexTarget);
 	}
 
 	@Override
 	public List<Follower> listOfFollower() {
-
 		return followerList;
 	}
 
