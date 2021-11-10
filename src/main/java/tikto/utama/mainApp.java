@@ -19,8 +19,8 @@ import org.json.XML;
 
 import com.google.gson.Gson;
 
-import tikto.utama.ejb.Follower;
-import tikto.utama.servlet.FollowerImpl;
+import tikto.utama.controller.FollowerImpl;
+import tikto.utama.model.Follower;
 
 @WebServlet("/followers")
 public class mainApp extends HttpServlet{

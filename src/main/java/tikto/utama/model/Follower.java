@@ -1,4 +1,4 @@
-package tikto.utama.ejb;
+package tikto.utama.model;
 
 import java.io.Serializable;
 

@@ -1,9 +1,9 @@
-package tikto.utama.servlet;
+package tikto.utama.controller;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import tikto.utama.ejb.Follower;
+import tikto.utama.model.Follower;
 
 public class FollowerImpl implements IFollowerService {
 
