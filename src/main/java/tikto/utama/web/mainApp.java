@@ -1,4 +1,4 @@
-package tikto.utama;
+package tikto.utama.web;
 
 import java.util.List;
 import java.io.BufferedInputStream;
