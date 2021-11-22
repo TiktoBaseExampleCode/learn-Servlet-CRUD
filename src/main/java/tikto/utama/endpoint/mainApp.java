@@ -1,4 +1,4 @@
-package tikto.utama;
+package tikto.utama.endpoint;
 
 import java.util.List;
 import java.io.IOException;
@@ -14,16 +14,17 @@ import org.json.JSONObject;
 import org.json.XML;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import tikto.utama.ejb.Follower;
 import tikto.utama.servlet.FollowerImpl;
 
-@WebServlet("/listing")
+@WebServlet("/follower")
 public class mainApp extends HttpServlet{
 	
 	private static final long serialVersionUID = 1L;
-
 	private Gson gson = new Gson();
+	private GsonBuilder gsonBuilder = new GsonBuilder();
 	private FollowerImpl followerImpl;
 	
 	public mainApp() {
@@ -33,33 +34,24 @@ public class mainApp extends HttpServlet{
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		String index = request.getParameter("index");
+		String index = null;
+		index = request.getParameter("index");
+		PrintWriter out = response.getWriter();
 		if(index == null) {	
 			List<Follower> listing= followerImpl.listOfFollower();
-			String listingCpy = this.gson.toJson(listing);
-			
-			JSONObject obj = new JSONObject(listingCpy);
-			String respond = XML.toString(obj);			
-			
-			PrintWriter out = response.getWriter();
-			
-			response.setContentType("text/xml");
-			response.setCharacterEncoding("UTF-8");
-			out.print(respond);
+			Gson gson = gsonBuilder.create();
+			String listingCpy = gson.toJson(listing);
+			response.setContentType("application/json");
+			out.print(listingCpy);
 			out.flush();
-			
 		}else{
 			Integer findIndex = Integer.parseInt(index);
 			Follower selectFollower = followerImpl.viewDetailFollower(findIndex);
 			String detailFollower = this.gson.toJson(selectFollower);
-			
 			JSONObject obj = new JSONObject(detailFollower);
-			String respond = XML.toString(obj);
-			
-			PrintWriter out = response.getWriter();
-			response.setContentType("text/xml");
+			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
-			out.print(respond);		
+			out.print(obj);		
 			out.flush();
 		}
 	}
